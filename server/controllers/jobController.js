@@ -95,7 +95,7 @@ exports.getJobApplicants = async (req, res, next) => {
     const job = await Job.findOne({ _id: req.params.id, poster: req.user._id });
     if (!job) return res.status(404).json({ message: 'Job not found or unauthorized' });
     const applications = await Application.find({ job: job._id })
-      .populate({ path: 'applicant', select: 'name email avatar' })
+      .populate({ path: 'applicant', select: 'name email avatar isFlagged flagReason' })
       .sort({ createdAt: -1 });
     res.json({ success: true, applications });
   } catch (err) { next(err); }

@@ -25,7 +25,6 @@ exports.getDashboardStats = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-// ── USERS ──────────────────────────────────────────────
 exports.getAllUsers = async (req, res, next) => {
   try {
     const { role, search, page = 1, limit = 20 } = req.query;
@@ -84,6 +83,56 @@ exports.unblockUser = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
+exports.flagUser = async (req, res, next) => {
+  try {
+    const { reason } = req.body;
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { isFlagged: true, flagReason: reason || 'Flagged by admin' },
+      { new: true }
+    );
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    res.json({ success: true, message: 'User flagged', user });
+  } catch (err) { next(err); }
+};
+
+exports.unflagUser = async (req, res, next) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { isFlagged: false, flagReason: '' },
+      { new: true }
+    );
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    res.json({ success: true, message: 'User unflagged', user });
+  } catch (err) { next(err); }
+};
+
+exports.getSeekerHistory = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    const profile = await JobSeekerProfile.findOne({ user: user._id }).populate('skills');
+
+    const applications = await Application.find({ applicant: user._id })
+      .populate({ path: 'job', populate: { path: 'poster', select: 'name email' } })
+      .sort({ createdAt: -1 });
+
+    const reviewsWritten = await Review.find({ reviewer: user._id })
+      .populate('reviewee', 'name email role')
+      .populate('job', 'title')
+      .sort({ createdAt: -1 });
+
+    const reviewsReceived = await Review.find({ reviewee: user._id })
+      .populate('reviewer', 'name email')
+      .populate('job', 'title')
+      .sort({ createdAt: -1 });
+
+    res.json({ success: true, user, profile, applications, reviewsWritten, reviewsReceived });
+  } catch (err) { next(err); }
+};
+
 exports.deleteUser = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.id);
@@ -97,7 +146,6 @@ exports.deleteUser = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-// ── JOBS ───────────────────────────────────────────────
 exports.getAllJobsAdmin = async (req, res, next) => {
   try {
     const { status, search, page = 1, limit = 20 } = req.query;
@@ -134,7 +182,6 @@ exports.deleteJobAdmin = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-// ── APPLICATIONS ───────────────────────────────────────
 exports.getAllApplicationsAdmin = async (req, res, next) => {
   try {
     const { status, page = 1, limit = 20 } = req.query;
@@ -160,14 +207,13 @@ exports.deleteApplicationAdmin = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-// ── REVIEWS ────────────────────────────────────────────
 exports.getAllReviewsAdmin = async (req, res, next) => {
   try {
     const { page = 1, limit = 20 } = req.query;
     const total = await Review.countDocuments();
     const reviews = await Review.find()
-      .populate('reviewer', 'name email')
-      .populate('reviewee', 'name email')
+      .populate('reviewer', 'name email isFlagged')
+      .populate('reviewee', 'name email isFlagged')
       .populate('job', 'title')
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)

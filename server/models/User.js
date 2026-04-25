@@ -2,12 +2,14 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
-  name: { type: String, required: [true, 'Name is required'], trim: true },
-  email: { type: String, required: [true, 'Email is required'], unique: true, lowercase: true, trim: true },
-  password: { type: String, required: [true, 'Password is required'], minlength: 6, select: false },
-  role: { type: String, enum: ['jobseeker', 'jobposter', 'systemadmin'], default: 'jobseeker' },
-  avatar: { type: String, default: '' },
-  isBlocked: { type: Boolean, default: false },
+  name:       { type: String, required: [true, 'Name is required'], trim: true },
+  email:      { type: String, required: [true, 'Email is required'], unique: true, lowercase: true, trim: true },
+  password:   { type: String, required: [true, 'Password is required'], minlength: 6, select: false },
+  role:       { type: String, enum: ['jobseeker', 'jobposter', 'systemadmin'], default: 'jobseeker' },
+  avatar:     { type: String, default: '' },
+  isBlocked:  { type: Boolean, default: false },
+  isFlagged:  { type: Boolean, default: false },
+  flagReason: { type: String, default: '' },
   isVerified: { type: Boolean, default: false },
 }, { timestamps: true });
 

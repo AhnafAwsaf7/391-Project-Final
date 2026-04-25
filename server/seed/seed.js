@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const dotenv = require('dotenv');
-dotenv.config({ path: '../.env' });
+dotenv.config({ path: require('path').resolve(__dirname, '../.env') });
 
 const User             = require('../models/User');
 const Skill            = require('../models/Skill');
@@ -11,7 +11,7 @@ const Job              = require('../models/Job');
 const Application      = require('../models/Application');
 const Review           = require('../models/Review');
 
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/job_marketplace';
+const MONGO_URI = 'mongodb://ahnafawsaf14_db_user:WarmachinerockX@ac-1cczror-shard-00-00.bcjjznq.mongodb.net:27017,ac-1cczror-shard-00-01.bcjjznq.mongodb.net:27017,ac-1cczror-shard-00-02.bcjjznq.mongodb.net:27017/job_marketplace?ssl=true&replicaSet=atlas-wc49uu-shard-0&authSource=admin&retryWrites=true&w=majority';
 
 async function seed() {
   await mongoose.connect(MONGO_URI);

@@ -5,15 +5,15 @@ const admin = authorize('systemadmin');
 const {
   getDashboardStats,
   getAllUsers, getUserById, updateUser, blockUser, unblockUser, deleteUser,
+  flagUser, unflagUser, getSeekerHistory,
   getAllJobsAdmin, updateJobAdmin, deleteJobAdmin,
   getAllApplicationsAdmin, deleteApplicationAdmin,
   getAllReviewsAdmin, deleteReviewAdmin,
 } = require('../controllers/adminController');
 
-// All admin routes require systemadmin role
 router.use(protect, admin);
 
-router.get('/stats',                    getDashboardStats);
+router.get('/stats', getDashboardStats);
 
 // Users
 router.get('/users',                    getAllUsers);
@@ -21,6 +21,9 @@ router.get('/users/:id',                getUserById);
 router.put('/users/:id',                updateUser);
 router.put('/users/:id/block',          blockUser);
 router.put('/users/:id/unblock',        unblockUser);
+router.put('/users/:id/flag',           flagUser);
+router.put('/users/:id/unflag',         unflagUser);
+router.get('/users/:id/history',        getSeekerHistory);
 router.delete('/users/:id',             deleteUser);
 
 // Jobs

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import Sidebar from '../../components/common/Sidebar';
 import api from '../../api/axios';
 
@@ -35,6 +36,16 @@ export default function AdminUsers() {
       const action = user.isBlocked ? 'unblock' : 'block';
       await api.put(`/admin/users/${user._id}/${action}`);
       flash(`User ${action}ed`);
+      load();
+    } finally { setWorking(null); }
+  };
+
+  const toggleFlag = async (user) => {
+    setWorking(user._id + 'flag');
+    try {
+      const action = user.isFlagged ? 'unflag' : 'flag';
+      await api.put(`/admin/users/${user._id}/${action}`, { reason: 'Flagged by admin' });
+      flash(`User ${action}ged`);
       load();
     } finally { setWorking(null); }
   };
@@ -86,25 +97,42 @@ export default function AdminUsers() {
               <tbody>
                 {users.map(u => (
                   <tr key={u._id}>
-                    <td><span style={{ fontWeight:600 }}>{u.name}</span></td>
+                    <td>
+                      <div style={{ display:'flex', alignItems:'center', gap:'.5rem' }}>
+                        <span style={{ fontWeight:600 }}>{u.name}</span>
+                        {u.isFlagged && <span style={{ background:'#ff4d6d22', color:'#ff4d6d', borderRadius:'99px', padding:'.1rem .45rem', fontSize:'.7rem', fontWeight:700 }}>🚩</span>}
+                      </div>
+                    </td>
                     <td style={{ color:'var(--text2)' }}>{u.email}</td>
                     <td>{roleBadge(u.role)}</td>
                     <td>
-                      {u.isBlocked
-                        ? <span className="badge badge-closed">Blocked</span>
-                        : <span className="badge badge-open">Active</span>}
+                      <div style={{ display:'flex', gap:'.3rem', flexWrap:'wrap' }}>
+                        {u.isBlocked && <span className="badge badge-closed">Blocked</span>}
+                        {u.isFlagged && <span className="badge badge-rejected">Flagged</span>}
+                        {!u.isBlocked && !u.isFlagged && <span className="badge badge-open">Active</span>}
+                      </div>
                     </td>
                     <td style={{ color:'var(--text3)', fontSize:'.82rem' }}>{new Date(u.createdAt).toLocaleDateString()}</td>
                     <td>
-                      <div style={{ display:'flex', gap:'.4rem' }}>
+                      <div style={{ display:'flex', gap:'.4rem', flexWrap:'wrap' }}>
+                        {u.role === 'jobseeker' && (
+                          <Link to={`/admin/seekers/${u._id}/history`} className="btn btn-secondary btn-sm">
+                            📋 History
+                          </Link>
+                        )}
+                        <button
+                          className={`btn btn-sm ${u.isFlagged ? 'btn-success' : 'btn-secondary'}`}
+                          disabled={working === u._id + 'flag' || u.role === 'systemadmin'}
+                          onClick={() => toggleFlag(u)}
+                        >{u.isFlagged ? '✅ Unflag' : '🚩 Flag'}</button>
                         <button
                           className={`btn btn-sm ${u.isBlocked ? 'btn-success' : 'btn-secondary'}`}
-                          disabled={working===u._id || u.role==='systemadmin'}
+                          disabled={working === u._id || u.role === 'systemadmin'}
                           onClick={() => toggleBlock(u)}
                         >{u.isBlocked ? '🔓 Unblock' : '🔒 Block'}</button>
                         <button
                           className="btn btn-danger btn-sm"
-                          disabled={working===u._id || u.role==='systemadmin'}
+                          disabled={working === u._id || u.role === 'systemadmin'}
                           onClick={() => deleteUser(u._id)}
                         >🗑</button>
                       </div>
