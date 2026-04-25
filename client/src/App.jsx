@@ -12,6 +12,7 @@ import PosterJobs       from './pages/jobposter/MyJobs';
 import PosterJobForm    from './pages/jobposter/JobForm';
 import PosterApplicants from './pages/jobposter/Applicants';
 import PosterProfile    from './pages/jobposter/Profile';
+import SeekerProfileView from './pages/jobposter/SeekerProfile';
 
 // Job Seeker
 import SeekerDashboard    from './pages/jobseeker/Dashboard';
@@ -57,12 +58,13 @@ export default function App() {
           <Route path="/home"     element={<RoleRedirect />} />
 
           {/* Job Poster */}
-          <Route path="/poster/dashboard"           element={<ProtectedRoute roles={['jobposter']}><PosterDashboard /></ProtectedRoute>} />
-          <Route path="/poster/jobs"                element={<ProtectedRoute roles={['jobposter']}><PosterJobs /></ProtectedRoute>} />
-          <Route path="/poster/jobs/new"            element={<ProtectedRoute roles={['jobposter']}><PosterJobForm /></ProtectedRoute>} />
-          <Route path="/poster/jobs/:id/edit"       element={<ProtectedRoute roles={['jobposter']}><PosterJobForm /></ProtectedRoute>} />
-          <Route path="/poster/jobs/:id/applicants" element={<ProtectedRoute roles={['jobposter']}><PosterApplicants /></ProtectedRoute>} />
-          <Route path="/poster/profile"             element={<ProtectedRoute roles={['jobposter']}><PosterProfile /></ProtectedRoute>} />
+          <Route path="/poster/dashboard"               element={<ProtectedRoute roles={['jobposter']}><PosterDashboard /></ProtectedRoute>} />
+          <Route path="/poster/jobs"                    element={<ProtectedRoute roles={['jobposter']}><PosterJobs /></ProtectedRoute>} />
+          <Route path="/poster/jobs/new"                element={<ProtectedRoute roles={['jobposter']}><PosterJobForm /></ProtectedRoute>} />
+          <Route path="/poster/jobs/:id/edit"           element={<ProtectedRoute roles={['jobposter']}><PosterJobForm /></ProtectedRoute>} />
+          <Route path="/poster/jobs/:id/applicants"     element={<ProtectedRoute roles={['jobposter']}><PosterApplicants /></ProtectedRoute>} />
+          <Route path="/poster/profile"                 element={<ProtectedRoute roles={['jobposter']}><PosterProfile /></ProtectedRoute>} />
+          <Route path="/poster/seekers/:userId/profile" element={<ProtectedRoute roles={['jobposter']}><SeekerProfileView /></ProtectedRoute>} />
 
           {/* Job Seeker */}
           <Route path="/seeker/dashboard"    element={<ProtectedRoute roles={['jobseeker']}><SeekerDashboard /></ProtectedRoute>} />
@@ -72,12 +74,12 @@ export default function App() {
           <Route path="/seeker/profile"      element={<ProtectedRoute roles={['jobseeker']}><SeekerProfile /></ProtectedRoute>} />
 
           {/* Admin */}
-          <Route path="/admin/dashboard"            element={<ProtectedRoute roles={['systemadmin']}><AdminDashboard /></ProtectedRoute>} />
-          <Route path="/admin/users"                element={<ProtectedRoute roles={['systemadmin']}><AdminUsers /></ProtectedRoute>} />
-          <Route path="/admin/jobs"                 element={<ProtectedRoute roles={['systemadmin']}><AdminJobs /></ProtectedRoute>} />
-          <Route path="/admin/applications"         element={<ProtectedRoute roles={['systemadmin']}><AdminApplications /></ProtectedRoute>} />
-          <Route path="/admin/reviews"              element={<ProtectedRoute roles={['systemadmin']}><AdminReviews /></ProtectedRoute>} />
-          <Route path="/admin/seekers/:id/history"  element={<ProtectedRoute roles={['systemadmin']}><SeekerHistory /></ProtectedRoute>} />
+          <Route path="/admin/dashboard"           element={<ProtectedRoute roles={['systemadmin']}><AdminDashboard /></ProtectedRoute>} />
+          <Route path="/admin/users"               element={<ProtectedRoute roles={['systemadmin']}><AdminUsers /></ProtectedRoute>} />
+          <Route path="/admin/jobs"                element={<ProtectedRoute roles={['systemadmin']}><AdminJobs /></ProtectedRoute>} />
+          <Route path="/admin/applications"        element={<ProtectedRoute roles={['systemadmin']}><AdminApplications /></ProtectedRoute>} />
+          <Route path="/admin/reviews"             element={<ProtectedRoute roles={['systemadmin']}><AdminReviews /></ProtectedRoute>} />
+          <Route path="/admin/seekers/:id/history" element={<ProtectedRoute roles={['systemadmin']}><SeekerHistory /></ProtectedRoute>} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

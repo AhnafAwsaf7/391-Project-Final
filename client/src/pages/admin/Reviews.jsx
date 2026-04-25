@@ -34,21 +34,13 @@ export default function AdminReviews() {
 
   const userLabel = (user) => (
     <span style={{ display:'inline-flex', alignItems:'center', gap:'.4rem' }}>
-      {user?.role === 'jobseeker' ? (
-        <Link
-          to={`/admin/seekers/${user._id}/history`}
-          style={{ color:'var(--accent)', fontWeight:600 }}
-        >
-          {user?.name}
-        </Link>
-      ) : (
-        <span style={{ fontWeight:600 }}>{user?.name}</span>
-      )}
+      <span style={{ fontWeight:600 }}>{user?.name}</span>
       {user?.isFlagged && (
         <span style={{ background:'#ff4d6d22', color:'#ff4d6d', borderRadius:'99px', padding:'.1rem .4rem', fontSize:'.7rem', fontWeight:700 }}>
           🚩 Flagged
         </span>
       )}
+      <span style={{ color:'var(--text3)', fontSize:'.75rem', textTransform:'capitalize' }}>({user?.role})</span>
     </span>
   );
 
@@ -58,7 +50,7 @@ export default function AdminReviews() {
       <main className="main-content">
         <div className="page-header">
           <h1>Reviews <span style={{ color:'var(--text2)', fontSize:'1rem', fontWeight:400 }}>({total})</span></h1>
-          <p>Click on a job seeker's name to view their full history</p>
+          <p>Click "View History" on any job seeker to see their full activity</p>
         </div>
 
         {msg && <div className="alert alert-success">{msg}</div>}
@@ -73,7 +65,7 @@ export default function AdminReviews() {
                   <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:'1rem' }}>
                     <div style={{ flex:1 }}>
 
-                      {/* Reviewer → Reviewee row */}
+                      {/* Reviewer → Reviewee + stars + date */}
                       <div style={{ display:'flex', gap:'.5rem', alignItems:'center', flexWrap:'wrap', marginBottom:'.5rem' }}>
                         {userLabel(r.reviewer)}
                         <span style={{ color:'var(--text3)' }}>→</span>
@@ -82,7 +74,7 @@ export default function AdminReviews() {
                         <span style={{ color:'var(--text3)', fontSize:'.78rem' }}>{new Date(r.createdAt).toLocaleDateString()}</span>
                       </div>
 
-                      {/* Email + job info */}
+                      {/* Emails + job */}
                       <div style={{ color:'var(--text2)', fontSize:'.82rem', marginBottom:'.5rem' }}>
                         👤 {r.reviewer?.email} → {r.reviewee?.email}
                         {r.job && <span> · Job: {r.job?.title}</span>}
@@ -93,7 +85,7 @@ export default function AdminReviews() {
                         {r.comment}
                       </p>
 
-                      {/* History buttons — one for reviewer if seeker, one for reviewee if seeker */}
+                      {/* History buttons for any job seekers involved */}
                       <div style={{ display:'flex', gap:'.5rem', flexWrap:'wrap' }}>
                         {r.reviewer?.role === 'jobseeker' && (
                           <Link
@@ -114,7 +106,7 @@ export default function AdminReviews() {
                       </div>
                     </div>
 
-                    {/* Delete button */}
+                    {/* Delete */}
                     <button className="btn btn-danger btn-sm" onClick={() => deleteReview(r._id)}>
                       🗑 Remove
                     </button>

@@ -10,18 +10,16 @@ export default function Applicants() {
   const { id } = useParams();
   const { user } = useAuth();
   const [applications, setApplications] = useState([]);
-  const [job, setJob]         = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [job, setJob]           = useState(null);
+  const [loading, setLoading]   = useState(true);
   const [updating, setUpdating] = useState(null);
-  const [msg, setMsg]         = useState('');
-  const [reviewTarget, setReviewTarget] = useState(null);
+  const [msg, setMsg]           = useState('');
   const [myReviews, setMyReviews] = useState([]);
-
-  // Review modal state
-  const [reviewRating, setReviewRating]   = useState(0);
-  const [reviewHovered, setReviewHovered] = useState(0);
-  const [reviewComment, setReviewComment] = useState('');
-  const [reviewError, setReviewError]     = useState('');
+  const [reviewTarget, setReviewTarget] = useState(null);
+  const [reviewRating, setReviewRating]     = useState(0);
+  const [reviewHovered, setReviewHovered]   = useState(0);
+  const [reviewComment, setReviewComment]   = useState('');
+  const [reviewError, setReviewError]       = useState('');
   const [reviewSubmitting, setReviewSubmitting] = useState(false);
 
   const load = async () => {
@@ -82,8 +80,6 @@ export default function Applicants() {
       });
       flash('Review submitted successfully! ⭐');
       setReviewTarget(null);
-      setReviewRating(0);
-      setReviewComment('');
       load();
     } catch (err) {
       setReviewError(err.response?.data?.message || 'Failed to submit review');
@@ -117,9 +113,9 @@ export default function Applicants() {
         ) : (
           <div style={{ display:'flex', flexDirection:'column', gap:'1rem' }}>
             {applications.map(app => {
-              const isHired = app.status === 'hired';
+              const isHired       = app.status === 'hired';
               const alreadyReviewed = myReviews.includes(app.applicant?._id);
-              const isFlagged = app.applicant?.isFlagged;
+              const isFlagged     = app.applicant?.isFlagged;
 
               return (
                 <div className="card" key={app._id} style={{
@@ -146,13 +142,10 @@ export default function Applicants() {
                             )}
                           </div>
                           <div style={{ color:'var(--text2)', fontSize:'.82rem' }}>{app.applicant?.email}</div>
-                          {/* Flag reason tooltip */}
                           {isFlagged && app.applicant?.flagReason && (
-                            <div style={{
-                              marginTop:'.3rem', padding:'.35rem .65rem',
+                            <div style={{ marginTop:'.3rem', padding:'.35rem .65rem',
                               background:'#ff4d6d11', border:'1px solid #ff4d6d33',
-                              borderRadius:'var(--radius-sm)', fontSize:'.78rem', color:'#ff4d6d',
-                            }}>
+                              borderRadius:'var(--radius-sm)', fontSize:'.78rem', color:'#ff4d6d' }}>
                               <strong>Flag reason:</strong> {app.applicant.flagReason}
                             </div>
                           )}
@@ -172,7 +165,7 @@ export default function Applicants() {
                         {app.coverLetter}
                       </div>
 
-                      {/* Status controls */}
+                      {/* Action buttons row */}
                       <div style={{ display:'flex', gap:'.5rem', flexWrap:'wrap', alignItems:'center' }}>
                         <span style={{ color:'var(--text2)', fontSize:'.82rem', fontWeight:600 }}>Status:</span>
                         {STATUSES.map(s => (
@@ -185,18 +178,22 @@ export default function Applicants() {
                           >{s}</button>
                         ))}
 
+                        {/* View Profile button — always visible */}
+                        <Link
+                          to={`/poster/seekers/${app.applicant?._id}/profile`}
+                          className="btn btn-secondary btn-sm"
+                          style={{ marginLeft:'auto' }}
+                        >👤 View Profile</Link>
+
                         {/* Review button — only for hired */}
                         {isHired && (
-                          <div style={{ marginLeft:'auto' }}>
-                            {alreadyReviewed ? (
-                              <span style={{ fontSize:'.82rem', color:'var(--accent3)' }}>✅ Reviewed</span>
-                            ) : (
-                              <button
-                                className="btn btn-primary btn-sm"
-                                onClick={() => openReviewModal(app)}
-                              >⭐ Leave Review</button>
-                            )}
-                          </div>
+                          alreadyReviewed ? (
+                            <span style={{ fontSize:'.82rem', color:'var(--accent3)' }}>✅ Reviewed</span>
+                          ) : (
+                            <button className="btn btn-primary btn-sm" onClick={() => openReviewModal(app)}>
+                              ⭐ Leave Review
+                            </button>
+                          )
                         )}
                       </div>
 
@@ -260,7 +257,7 @@ export default function Applicants() {
                       rows={5}
                       value={reviewComment}
                       onChange={e => setReviewComment(e.target.value)}
-                      placeholder="Describe your experience working with this person — communication, quality of work, professionalism…"
+                      placeholder="Describe your experience working with this person…"
                       required
                     />
                     <div style={{ color:'var(--text3)', fontSize:'.78rem', textAlign:'right' }}>{reviewComment.length} chars (min 10)</div>
