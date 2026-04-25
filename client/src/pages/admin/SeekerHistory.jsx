@@ -68,7 +68,7 @@ export default function SeekerHistory() {
     </div>
   );
 
-  const { user, profile, applications, reviewsWritten, reviewsReceived } = data;
+  const { user, profile, applications, reviewsWritten } = data;
 
   return (
     <div className="page-wrapper">
@@ -105,31 +105,19 @@ export default function SeekerHistory() {
                 </div>
               )}
               <div style={{ display:'flex', gap:'.5rem', flexWrap:'wrap', marginTop:'.75rem' }}>
-
-                {/* Flag / Unflag */}
                 {user.isFlagged ? (
-                  <button className="btn btn-success btn-sm" disabled={working} onClick={handleUnflag}>
-                    ✅ Remove Flag
-                  </button>
+                  <button className="btn btn-success btn-sm" disabled={working} onClick={handleUnflag}>✅ Remove Flag</button>
                 ) : (
-                  <button
-                    className="btn btn-danger btn-sm"
-                    disabled={working}
-                    onClick={() => setShowFlagInput(!showFlagInput)}
-                  >🚩 Flag User</button>
+                  <button className="btn btn-danger btn-sm" disabled={working} onClick={() => setShowFlagInput(!showFlagInput)}>🚩 Flag User</button>
                 )}
-
-                {/* Block / Unblock */}
                 <button
                   className={`btn btn-sm ${user.isBlocked ? 'btn-success' : 'btn-secondary'}`}
                   disabled={working}
                   onClick={handleBlock}
                 >{user.isBlocked ? '🔓 Unblock' : '🔒 Block'}</button>
-
-                <Link to={`/admin/users`} className="btn btn-secondary btn-sm">← All Users</Link>
+                <Link to="/admin/users" className="btn btn-secondary btn-sm">← All Users</Link>
               </div>
 
-              {/* Flag reason input */}
               {showFlagInput && (
                 <div style={{ marginTop:'.75rem', display:'flex', gap:'.5rem', alignItems:'center', flexWrap:'wrap' }}>
                   <input
@@ -138,12 +126,8 @@ export default function SeekerHistory() {
                     placeholder="Reason for flagging (optional)"
                     style={{ flex:1, minWidth:200 }}
                   />
-                  <button className="btn btn-danger btn-sm" disabled={working} onClick={handleFlag}>
-                    Confirm Flag
-                  </button>
-                  <button className="btn btn-secondary btn-sm" onClick={() => setShowFlagInput(false)}>
-                    Cancel
-                  </button>
+                  <button className="btn btn-danger btn-sm" disabled={working} onClick={handleFlag}>Confirm Flag</button>
+                  <button className="btn btn-secondary btn-sm" onClick={() => setShowFlagInput(false)}>Cancel</button>
                 </div>
               )}
             </div>
@@ -151,10 +135,9 @@ export default function SeekerHistory() {
             {/* Stats */}
             <div style={{ display:'flex', gap:'1rem', flexShrink:0, flexWrap:'wrap' }}>
               {[
-                { label:'Applications', value: applications.length },
-                { label:'Reviews Given', value: reviewsWritten.length },
-                { label:'Reviews Received', value: reviewsReceived.length },
-                { label:'Avg Rating', value: profile?.averageRating?.toFixed(1) || '—' },
+                { label:'Applications',   value: applications.length },
+                { label:'Reviews Given',  value: reviewsWritten.length },
+                { label:'Avg Rating',     value: profile?.averageRating?.toFixed(1) || '—' },
               ].map(s => (
                 <div key={s.label} className="card" style={{ textAlign:'center', padding:'.75rem 1rem', minWidth:90 }}>
                   <div style={{ fontSize:'1.4rem', fontWeight:800, fontFamily:'var(--font-head)', color:'var(--accent)' }}>{s.value}</div>
@@ -165,12 +148,11 @@ export default function SeekerHistory() {
           </div>
         </div>
 
-        {/* ── Tabs ── */}
+        {/* ── Tabs — Reviews Received removed ── */}
         <div className="tabs" style={{ marginBottom:'1.5rem' }}>
           {[
-            { key:'overview',   label:'Profile Overview' },
-            { key:'reviews',    label:`Reviews Given (${reviewsWritten.length})` },
-            { key:'received',   label:`Reviews Received (${reviewsReceived.length})` },
+            { key:'overview',     label:'Profile Overview' },
+            { key:'reviews',      label:`Reviews Given (${reviewsWritten.length})` },
             { key:'applications', label:`Applications (${applications.length})` },
           ].map(t => (
             <button key={t.key} className={`tab ${activeTab===t.key?'active':''}`} onClick={() => setActiveTab(t.key)}>
@@ -198,7 +180,6 @@ export default function SeekerHistory() {
                 </div>
               ))}
             </div>
-
             <div className="card">
               <h3 className="section-title">Skills</h3>
               {profile?.skills?.length > 0 ? (
@@ -206,7 +187,6 @@ export default function SeekerHistory() {
                   {profile.skills.map(s => <span key={s._id} className="skill-tag">{s.name}</span>)}
                 </div>
               ) : <p style={{ color:'var(--text2)', fontSize:'.88rem' }}>No skills added</p>}
-
               {profile?.bio && (
                 <>
                   <h3 className="section-title" style={{ marginTop:'1.25rem' }}>Bio</h3>
@@ -235,38 +215,7 @@ export default function SeekerHistory() {
                         {r.job && <div style={{ color:'var(--text2)', fontSize:'.82rem' }}>Job: {r.job?.title}</div>}
                       </div>
                       <div style={{ display:'flex', alignItems:'center', gap:'.75rem' }}>
-                        <span style={{ color:'#ffd166' }}>{stars(r.rating)}</span>
-                        <span style={{ color:'var(--text3)', fontSize:'.78rem' }}>{new Date(r.createdAt).toLocaleDateString()}</span>
-                      </div>
-                    </div>
-                    <p style={{ color:'var(--text2)', fontSize:'.88rem', padding:'.6rem .75rem', background:'var(--bg3)', borderRadius:'var(--radius-sm)' }}>
-                      {r.comment}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* ── Tab: Reviews Received ── */}
-        {activeTab === 'received' && (
-          <div>
-            {reviewsReceived.length === 0 ? (
-              <div className="card empty-state"><h3>No reviews received yet</h3></div>
-            ) : (
-              <div style={{ display:'flex', flexDirection:'column', gap:'1rem' }}>
-                {reviewsReceived.map(r => (
-                  <div className="card" key={r._id}>
-                    <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:'.5rem' }}>
-                      <div>
-                        <div style={{ fontWeight:600, fontSize:'.92rem' }}>
-                          From: <span style={{ color:'var(--accent)' }}>{r.reviewer?.name}</span>
-                        </div>
-                        {r.job && <div style={{ color:'var(--text2)', fontSize:'.82rem' }}>Job: {r.job?.title}</div>}
-                      </div>
-                      <div style={{ display:'flex', alignItems:'center', gap:'.75rem' }}>
-                        <span style={{ color:'#ffd166' }}>{stars(r.rating)}</span>
+                        <span style={{ color:'#ffd166' }}>{'★'.repeat(r.rating) + '☆'.repeat(5-r.rating)}</span>
                         <span style={{ color:'var(--text3)', fontSize:'.78rem' }}>{new Date(r.createdAt).toLocaleDateString()}</span>
                       </div>
                     </div>

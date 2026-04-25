@@ -63,7 +63,11 @@ export default function AdminUsers() {
   const roleBadge = r => {
     const colours = { jobseeker:'var(--accent)', jobposter:'#ffd166', systemadmin:'var(--accent2)' };
     const labels  = { jobseeker:'Seeker', jobposter:'Poster', systemadmin:'Admin' };
-    return <span style={{ padding:'.15rem .55rem', borderRadius:'99px', fontSize:'.75rem', fontWeight:700, background: colours[r]+'22', color: colours[r] }}>{labels[r] || r}</span>;
+    return (
+      <span style={{ padding:'.15rem .55rem', borderRadius:'99px', fontSize:'.75rem', fontWeight:700, background: colours[r]+'22', color: colours[r] }}>
+        {labels[r] || r}
+      </span>
+    );
   };
 
   return (
@@ -100,7 +104,9 @@ export default function AdminUsers() {
                     <td>
                       <div style={{ display:'flex', alignItems:'center', gap:'.5rem' }}>
                         <span style={{ fontWeight:600 }}>{u.name}</span>
-                        {u.isFlagged && <span style={{ background:'#ff4d6d22', color:'#ff4d6d', borderRadius:'99px', padding:'.1rem .45rem', fontSize:'.7rem', fontWeight:700 }}>🚩</span>}
+                        {u.isFlagged && (
+                          <span style={{ background:'#ff4d6d22', color:'#ff4d6d', borderRadius:'99px', padding:'.1rem .45rem', fontSize:'.7rem', fontWeight:700 }}>🚩</span>
+                        )}
                       </div>
                     </td>
                     <td style={{ color:'var(--text2)' }}>{u.email}</td>
@@ -115,8 +121,14 @@ export default function AdminUsers() {
                     <td style={{ color:'var(--text3)', fontSize:'.82rem' }}>{new Date(u.createdAt).toLocaleDateString()}</td>
                     <td>
                       <div style={{ display:'flex', gap:'.4rem', flexWrap:'wrap' }}>
+                        {/* History button — seekers and posters */}
                         {u.role === 'jobseeker' && (
                           <Link to={`/admin/seekers/${u._id}/history`} className="btn btn-secondary btn-sm">
+                            📋 History
+                          </Link>
+                        )}
+                        {u.role === 'jobposter' && (
+                          <Link to={`/admin/posters/${u._id}/history`} className="btn btn-secondary btn-sm">
                             📋 History
                           </Link>
                         )}

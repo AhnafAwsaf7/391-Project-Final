@@ -212,8 +212,8 @@ exports.getAllReviewsAdmin = async (req, res, next) => {
     const { page = 1, limit = 20 } = req.query;
     const total = await Review.countDocuments();
     const reviews = await Review.find()
-      .populate('reviewer', 'name email isFlagged')
-      .populate('reviewee', 'name email isFlagged')
+      .populate('reviewer', 'name email role isFlagged flagReason')
+      .populate('reviewee', 'name email role isFlagged flagReason')
       .populate('job', 'title')
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)

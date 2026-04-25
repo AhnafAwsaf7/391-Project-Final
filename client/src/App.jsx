@@ -7,11 +7,11 @@ import RegisterPage from './pages/auth/RegisterPage';
 import LandingPage  from './pages/LandingPage';
 
 // Job Poster
-import PosterDashboard  from './pages/jobposter/Dashboard';
-import PosterJobs       from './pages/jobposter/MyJobs';
-import PosterJobForm    from './pages/jobposter/JobForm';
-import PosterApplicants from './pages/jobposter/Applicants';
-import PosterProfile    from './pages/jobposter/Profile';
+import PosterDashboard   from './pages/jobposter/Dashboard';
+import PosterJobs        from './pages/jobposter/MyJobs';
+import PosterJobForm     from './pages/jobposter/JobForm';
+import PosterApplicants  from './pages/jobposter/Applicants';
+import PosterProfile     from './pages/jobposter/Profile';
 import SeekerProfileView from './pages/jobposter/SeekerProfile';
 
 // Job Seeker
@@ -28,6 +28,7 @@ import AdminJobs         from './pages/admin/Jobs';
 import AdminApplications from './pages/admin/Applications';
 import AdminReviews      from './pages/admin/Reviews';
 import SeekerHistory     from './pages/admin/SeekerHistory';
+import PosterHistory     from './pages/admin/PosterHistory';
 
 const ProtectedRoute = ({ children, roles }) => {
   const { user, loading } = useAuth();
@@ -74,12 +75,13 @@ export default function App() {
           <Route path="/seeker/profile"      element={<ProtectedRoute roles={['jobseeker']}><SeekerProfile /></ProtectedRoute>} />
 
           {/* Admin */}
-          <Route path="/admin/dashboard"           element={<ProtectedRoute roles={['systemadmin']}><AdminDashboard /></ProtectedRoute>} />
-          <Route path="/admin/users"               element={<ProtectedRoute roles={['systemadmin']}><AdminUsers /></ProtectedRoute>} />
-          <Route path="/admin/jobs"                element={<ProtectedRoute roles={['systemadmin']}><AdminJobs /></ProtectedRoute>} />
-          <Route path="/admin/applications"        element={<ProtectedRoute roles={['systemadmin']}><AdminApplications /></ProtectedRoute>} />
-          <Route path="/admin/reviews"             element={<ProtectedRoute roles={['systemadmin']}><AdminReviews /></ProtectedRoute>} />
-          <Route path="/admin/seekers/:id/history" element={<ProtectedRoute roles={['systemadmin']}><SeekerHistory /></ProtectedRoute>} />
+          <Route path="/admin/dashboard"            element={<ProtectedRoute roles={['systemadmin']}><AdminDashboard /></ProtectedRoute>} />
+          <Route path="/admin/users"                element={<ProtectedRoute roles={['systemadmin']}><AdminUsers /></ProtectedRoute>} />
+          <Route path="/admin/jobs"                 element={<ProtectedRoute roles={['systemadmin']}><AdminJobs /></ProtectedRoute>} />
+          <Route path="/admin/applications"         element={<ProtectedRoute roles={['systemadmin']}><AdminApplications /></ProtectedRoute>} />
+          <Route path="/admin/reviews"              element={<ProtectedRoute roles={['systemadmin']}><AdminReviews /></ProtectedRoute>} />
+          <Route path="/admin/seekers/:id/history"  element={<ProtectedRoute roles={['systemadmin']}><SeekerHistory /></ProtectedRoute>} />
+          <Route path="/admin/posters/:id/history"  element={<ProtectedRoute roles={['systemadmin']}><PosterHistory /></ProtectedRoute>} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
